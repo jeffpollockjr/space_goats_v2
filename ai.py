@@ -213,8 +213,12 @@ class AIPlayer:
         
         Returns a Special Card from hand if responding, None otherwise.
         """
+        # Handle Colony Victory events (card is None)
+        if event.card is None:
+            return self._respond_to_colony_victory(event, game_state)
+        
+        # Handle rocket firing
         if event.card.card_type != CardType.SPECIAL:
-            # Responding to a rocket firing
             return self._respond_to_rocket(event, game_state)
         
         # Could implement further response logic for other special cards
@@ -231,6 +235,23 @@ class AIPlayer:
             if intercepts and self.player.ship.get_shield_count() == 0:
                 # No shields, play Intercept to save ship
                 return intercepts[0]
+        
+        return None
+    
+    def _respond_to_colony_victory(self, event, game_state: GameState) -> Optional[Card]:
+        """Decide whether to respond to a Colony Victory declaration."""
+        # Only respond if the declaring player is not us
+        if event.source_player == self.player:
+            return None
+        
+        # Try to play Steal to block the victory
+        steals = [c for c in self.player.hand 
+                 if c.card_type == CardType.SPECIAL 
+                 and c.subtype == SpecialSubtype.STEAL]
+        
+        if steals and len(event.source_player.grass_stockpile) > 0:
+            # Play a Steal card against the declaring player
+            return steals[0]
         
         return None
     
