@@ -10,20 +10,26 @@
 
 ## Players & Setup
 
-| Players | Space Grass Win Threshold |
-|---------|--------------------------|
-| 2       | 10 Grass                 |
-| 3       | 12 Grass                 |
-| 4       | 14 Grass                 |
-| 5       | 16 Grass                 |
+**All player counts:** Colony Victory threshold is **6 Space Grass cards**.
+
+### 2-Player Duel Variant
+When the game starts with exactly 2 players, special balance rules apply:
+- **No Laser Rockets:** Laser rockets are excluded from the Shared Pile to extend combat duration
+- **Starting Shields:** Each player begins with one Shield card already attached to slot 0 of their ship
+- **Reduced Shared Pile:** 73 cards total (instead of 81)
+
+These rules do NOT apply to games that naturally reduce to 2 players through elimination.
 
 ### Setup Steps
 1. Separate all 5 **Ship Cards** from the deck and deal one to each player face-up in front of them.
 2. Separate all 18 **Space Grass Cards** from the deck and shuffle them into their own face-down **Grass Pile**. Place it in a visible shared area.
-3. Shuffle the remaining 81 cards into the face-down **Shared Pile**. Place it next to the Grass Pile.
+3. Build and shuffle the **Shared Pile**:
+   - For 3+ player games: 81 cards
+   - For 2-player games: 73 cards (no Laser Rockets, 2 fewer Shields used as starting equipment)
 4. Each player draws **5 cards** from the Shared Pile as their starting hand.
-5. Determine a starting player (e.g. most recent space-related movie watched goes first).
-6. Each player places their Ship Card in their **play area**. Space Grass is tracked physically — drawn Grass cards are kept face-up in front of each player as their personal stockpile.
+5. **For 2-player games only:** Attach one Shield card to slot 0 of each player's ship as starting equipment.
+6. Determine a starting player (e.g. most recent space-related movie watched goes first).
+7. Each player places their Ship Card in their **play area**. Space Grass is tracked physically — drawn Grass cards are kept face-up in front of each player as their personal stockpile.
 
 ---
 
@@ -43,7 +49,7 @@ The Colony Victory is intentionally difficult to pull off — opponents can targ
 Each player controls one **Ship Card**. Ships are the same structurally but each has a unique **passive perk** (see Ship Archetypes below).
 
 ### Ship Stats (All Ships)
-- **Hull HP:** 1 — if the Hull is hit, the ship is destroyed
+- **Hull HP:** 2 — the ship is destroyed only after the Hull is hit twice
 - **Upgrade Slots:** 4 — cards can be attached here (shields, boosters)
 - **Destruction Rule:** The Hull can only be hit by a Rocket or Laser that reaches it directly. **Only Shields protect the Hull** — Boosters do not block incoming rockets. The Hull is exposed the moment no Shields remain, regardless of how many Boosters are attached.
 
@@ -123,6 +129,8 @@ Discard down to **5 cards** (hand limit). Your turn ends. Play passes clockwise.
 - Fire **immediately** when played — skip the Orbit Zone entirely.
 - Otherwise follow the same targeting rules as standard rockets.
 - Rarer than standard rockets — fewer copies in the deck.
+- **Restriction:** Cannot be played until after the first round of turns (turn count > 1).
+- **2-Player Duel:** Laser rockets are not included in 2-player games.
 
 ### Shields
 - Attach to an open ship slot during Phase 4.

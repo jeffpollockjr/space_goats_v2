@@ -157,26 +157,35 @@ SHIPS = [
 # Pile Construction
 # ============================================================================
 
-def build_shared_pile() -> List[Card]:
+def build_shared_pile(num_players: int = 5) -> List[Card]:
     """
-    Build the Shared Pile (81 cards).
+    Build the Shared Pile.
     
-    Composition:
+    For 2-player games: 
+      - Laser Rockets are excluded (no direct fire)
+      - 2 Shields are excluded (given as starting equipment)
+      - Total: 73 cards
+    For 3+ player games: Full composition with Laser Rockets (81 cards total)
+    
+    Standard composition:
     - 19 Standard Rockets
-    - 6 Laser Rockets
-    - 19 Shields
+    - 6 Laser Rockets (excluded for 2-player)
+    - 19 Shields (2 excluded for 2-player as starting shields)
     - 14 Boosters
     - 5 Intercept Special Cards
     - 5 Steal Special Cards
     - 5 Sabotage Special Cards
     - 4 Repair Special Cards
     - 4 Launch Special Cards
-    = 81 total
     """
+    # For 2-player, exclude first 2 shields and all laser rockets
+    shields_to_use = SHIELDS.copy() if num_players != 2 else SHIELDS[2:].copy()
+    laser_rockets_to_use = [] if num_players == 2 else LASER_ROCKETS.copy()
+    
     shared_pile = (
         STANDARD_ROCKETS.copy() +
-        LASER_ROCKETS.copy() +
-        SHIELDS.copy() +
+        laser_rockets_to_use +
+        shields_to_use +
         BOOSTERS.copy() +
         SPECIAL_INTERCEPT.copy() +
         SPECIAL_STEAL.copy() +
@@ -197,9 +206,13 @@ def build_ship_cards() -> List[Card]:
     return SHIPS.copy()
 
 
-def create_game_piles(random_seed: int = None) -> tuple:
+def create_game_piles(random_seed: int = None, num_players: int = 5) -> tuple:
     """
     Create and shuffle the game piles.
+    
+    Args:
+        random_seed: Random seed for reproducibility
+        num_players: Number of players (affects card composition for 2-player)
     
     Returns:
         (shared_pile, grass_pile, ship_cards) — all shuffled except ship_cards
@@ -207,7 +220,7 @@ def create_game_piles(random_seed: int = None) -> tuple:
     if random_seed is not None:
         random.seed(random_seed)
     
-    shared_pile = build_shared_pile()
+    shared_pile = build_shared_pile(num_players)
     grass_pile = build_grass_pile()
     ship_cards = build_ship_cards()
     

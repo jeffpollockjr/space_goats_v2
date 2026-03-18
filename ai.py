@@ -171,6 +171,10 @@ class AIPlayer:
     def _fire_laser_rockets(self, player: Player, 
                            game_state: GameState) -> None:
         """Fire Laser Rockets at vulnerable opponents."""
+        # Laser rockets cannot be played until after the first round
+        if game_state.turn_count <= 1:
+            return
+        
         laser_rockets = [c for c in player.hand if c.card_type == CardType.LASER_ROCKET]
         
         for laser in laser_rockets:
@@ -261,14 +265,8 @@ class AIPlayer:
     
     def _get_colony_victory_threshold(self, game_state: GameState) -> int:
         """Get the Grass threshold for this player count."""
-        player_count = game_state.count_active_players()
-        thresholds = {
-            2: 10,
-            3: 12,
-            4: 14,
-            5: 16,
-        }
-        return thresholds.get(player_count, 12)
+        # Colony victory threshold is 6 cards for all player counts
+        return 6
     
     def get_best_target_for_rocket(self, player: Player, 
                                    game_state: GameState) -> Optional[Player]:

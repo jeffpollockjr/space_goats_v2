@@ -52,7 +52,14 @@ class SpaceGoatsGame:
         self.logger.print_welcome()
         
         # Create piles
-        shared_pile, grass_pile, ship_cards = create_game_piles(self.random_seed)
+        shared_pile, grass_pile, ship_cards = create_game_piles(self.random_seed, self.num_players)
+        
+        # Prepare starting shields for 2-player duels
+        starting_shields = []
+        if self.num_players == 2:
+            from deck import SHIELDS
+            # Use the first 2 shields as starting equipment (not from the pile)
+            starting_shields = [SHIELDS[0], SHIELDS[1]]
         
         # Create players
         ship_names = [card.name for card in ship_cards]
@@ -61,6 +68,11 @@ class SpaceGoatsGame:
         for i in range(self.num_players):
             ship = Ship(name=ship_names[i])
             player = Player(name=f"Player {i + 1}", ship=ship)
+            
+            # For 2-player duels, attach a starting shield to slot 0
+            if self.num_players == 2 and i < len(starting_shields):
+                player.ship.slots[0] = starting_shields[i]
+            
             players.append(player)
         
         # Create game state
@@ -248,13 +260,8 @@ class SpaceGoatsGame:
     
     def _get_colony_threshold(self) -> int:
         """Get the Colony Victory Grass threshold for current player count."""
-        thresholds = {
-            2: 10,
-            3: 12,
-            4: 14,
-            5: 16,
-        }
-        return thresholds.get(self.num_players, 12)
+        # Colony victory threshold is 6 cards for all player counts
+        return 6
     
     def _handle_colony_victory_stack_window(self, declaring_player: Player,
                                            threshold: int) -> None:

@@ -34,6 +34,10 @@
 
 *Effect: Fire immediately when played — bypasses the Orbit Zone entirely. Destroys one Shield on the target ship. If no Shields remain, destroys the target ship's Hull. Does not go on the Card Stack.*
 
+**Restriction:** Cannot be played until after the first round of turns (turn count > 1).
+
+**2-Player Duel:** Laser rockets are not included in 2-player games.
+
 | # | Card Name | Flavor Note |
 |---|-----------|-------------|
 | 1 | **Flash Bleat** | Gone before you hear the sound. |

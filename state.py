@@ -65,12 +65,12 @@ class Ship:
     
     Attributes:
         name: Ship name
-        hull_hp: Hull hit points (always 1)
+        hull_hp: Hull hit points (always 2)
         slots: 4 upgrade slots (Shields or Boosters)
         orbit_zone: Rockets staged here (max 2 or modified by Boosters)
     """
     name: str
-    hull_hp: int = 1
+    hull_hp: int = 2
     slots: List[Optional[Card]] = field(default_factory=lambda: [None, None, None, None])
     orbit_zone: List[Card] = field(default_factory=list)
     

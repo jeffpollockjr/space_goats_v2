@@ -52,16 +52,20 @@ RANDOM_SEED = None
 
 ### Colony Victory Threshold
 
-Scales automatically with player count:
-- 2 players: 10 Grass cards
-- 3 players: 12 Grass cards
-- 4 players: 14 Grass cards
-- 5 players: 16 Grass cards
+**6 Space Grass cards** for all player counts.
+
+#### 2-Player Duel Variant
+When the game starts with 2 players:
+- Laser Rockets are excluded from the deck
+- Each player starts with a Shield card already attached to slot 0
+- Shared Pile contains 73 cards instead of 81
 
 ## Game Overview
 
 ### The Setup
-Each player receives one unique ship and a starting hand of 5 cards drawn from the Shared Pile. Ships are identical in mechanics (4 upgrade slots, 1 Hull HP) but differ in name for identity.
+Each player receives one unique ship and a starting hand of 5 cards drawn from the Shared Pile. Ships are identical in mechanics (4 upgrade slots, 2 Hull HP) but differ in name for identity.
+
+In 2-player games, each player also starts with a Shield card already attached to slot 0.
 
 ### Turn Structure (5 Phases)
 
@@ -89,9 +93,9 @@ Each player receives one unique ship and a starting hand of 5 cards drawn from t
 
 ### Card Types
 
-**Rockets (25 cards)**
+**Rockets** (Standard: 19 cards, Laser: 6 cards in 3+ player games)
 - Standard Rockets (19): Stage to Orbit Zone, fire in Phase 2
-- Laser Rockets (6): Fire immediately when played
+- Laser Rockets (6 in 3+ player games, 0 in 2-player): Fire immediately when played; cannot be used until after turn 1
 
 **Shields (19 cards)**
 - Attach to ship slots, absorb 1 rocket hit, then destroyed

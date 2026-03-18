@@ -51,7 +51,7 @@ Build all game state objects first. Everything else depends on these.
 ```python
 # Key objects to define:
 - Card(name, card_type, subtype, effect)
-- Ship(name, hull_hp=1, slots=[], orbit_zone=[])
+- Ship(name, hull_hp=2, slots=[], orbit_zone=[])
 - Player(name, ship, hand=[], grass_stockpile=[])
 - GameState(players, shared_pile, grass_pile, discard_pile, card_stack, current_player_index)
 ```
@@ -60,7 +60,7 @@ Build all game state objects first. Everything else depends on these.
 - Ship has exactly 4 slots
 - Orbit Zone cap is 2 rockets per ship
 - Hand limit is 5 cards
-- Hull HP is 1
+- Hull HP is 2 (ship destroyed after 2 hits)
 - Grass stockpile is a list of physical cards, not a number
 
 ---
@@ -69,7 +69,9 @@ Build all game state objects first. Everything else depends on these.
 
 Build the two piles separately from the card definitions in `space_goats_v2_cards.md`.
 
-**Shared Pile (81 cards):**
+**Shared Pile (Standard: 81 cards, 2-Player Duel: 73 cards):**
+
+Standard composition (3+ players):
 - 19 Standard Rockets
 - 6 Laser Rockets
 - 19 Shields
@@ -80,8 +82,19 @@ Build the two piles separately from the card definitions in `space_goats_v2_card
 - 4 Special — Repair
 - 4 Special — Launch
 
+2-Player Duel composition:
+- 19 Standard Rockets
+- 0 Laser Rockets (excluded for 2-player)
+- 17 Shields (first 2 given as starting equipment)
+- 14 Boosters
+- 5 Special — Intercept
+- 5 Special — Steal
+- 5 Special — Sabotage
+- 4 Special — Repair
+- 4 Special — Launch
+
 **Grass Pile (18 cards):**
-- 18 Space Grass cards
+- 18 Space Grass cards (all player counts)
 
 **Ship Cards (5 cards):**
 - Dealt directly to players at setup — never shuffled into either pile
@@ -89,14 +102,17 @@ Build the two piles separately from the card definitions in `space_goats_v2_card
 **Setup sequence:**
 1. Create all 5 ship cards and deal one to each player
 2. Build and shuffle the Grass Pile
-3. Build and shuffle the Shared Pile
-4. Deal 5 cards from the Shared Pile to each player's hand
+3. Build and shuffle the Shared Pile (composition depends on player count)
+4. For 2-player games: Attach one Shield card to slot 0 of each player's ship
+5. Deal 5 cards from the Shared Pile to each player's hand
 
 ---
 
 ### Step 3 — Turn Engine (`turns.py`)
 
 Implement the 5 phases in strict order. Each phase must be a separate function.
+
+**Colony Victory Threshold:** 6 Space Grass cards for all player counts.
 
 ```python
 def phase_1_draw(player, game_state)
