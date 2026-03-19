@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Space Goats v2 — Rules</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne+Mono&family=Bebas+Neue&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #09090f;
+    --deep: #0f0f1e;
+    --panel: #14142a;
+    --rim: #1e1e3f;
+    --grass: #2dff7a;
+    --grass-dim: #1aad55;
+    --rocket: #ff5c2b;
+    --shield: #38b6ff;
+    --special: #ffd23f;
+    --laser: #ff2e9f;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --white: #ffffff;
+    --rule-line: rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--void);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+    position: relative;
+  }
+
+  /* Starfield */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 80% 50%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 63% 44%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 47% 9%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* =============================== HEADER ================================= */
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
+    position: relative;
+  }
+
+  .game-eyebrow {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grass);
+    margin-bottom: 12px;
+    opacity: 0.85;
+  }
+
+  .game-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 120px);
+    letter-spacing: 0.05em;
+    line-height: 0.88;
+    color: var(--white);
+    text-shadow:
+      0 0 60px rgba(45,255,122,0.25),
+      0 0 120px rgba(45,255,122,0.1);
+    margin-bottom: 8px;
+  }
+
+  .game-title span {
+    color: var(--grass);
+  }
+
+  .game-subtitle {
+    font-family: 'Syne Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+
+  .header-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--grass), transparent);
+    margin-top: 32px;
+    opacity: 0.4;
+  }
+
+  /* =============================== SECTIONS =============================== */
+
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .section-num {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule-line);
+  }
+
+  /* =============================== OVERVIEW BOX =========================== */
+
+  .overview-box {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-left: 3px solid var(--grass);
+    border-radius: 6px;
+    padding: 22px 26px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .overview-box p + p { margin-top: 10px; }
+
+  /* =============================== WIN CONDITIONS ========================= */
+
+  .win-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .win-card {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 22px 22px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .win-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .win-card.combat::before { background: var(--rocket); }
+  .win-card.colony::before { background: var(--grass); }
+
+  .win-label {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .win-card.combat .win-label { color: var(--rocket); }
+  .win-card.colony .win-label { color: var(--grass); }
+
+  .win-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .win-desc {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* =============================== SETUP ================================== */
+
+  .steps-list {
+    counter-reset: step;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .steps-list li {
+    counter-increment: step;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 6px;
+    padding: 13px 16px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .steps-list li::before {
+    content: counter(step);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--grass);
+    line-height: 1.1;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+  }
+
+  .note-box {
+    background: rgba(255, 210, 63, 0.06);
+    border: 1px solid rgba(255, 210, 63, 0.2);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 13.5px;
+    color: var(--text);
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .note-box strong { color: var(--special); }
+
+  /* =============================== SHIP ================================== */
+
+  .ship-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .ship-stat-block {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .stat-label {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.03em;
+    color: var(--shield);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .ship-names-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ship-tag {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--text);
+    letter-spacing: 0.03em;
+  }
+
+  /* =============================== PHASES ================================= */
+
+  .phases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .phase-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0;
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .phase-num-col {
+    background: var(--deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 10px;
+    border-right: 1px solid var(--rim);
+    flex-shrink: 0;
+  }
+
+  .phase-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .phase-tag {
+    font-family: 'Syne Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  .phase-content {
+    padding: 16px 20px;
+  }
+
+  .phase-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .phase-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .phase-desc ul {
+    margin-top: 6px;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .phase-highlight {
+    display: inline-block;
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+  }
+
+  .ph-grass { background: rgba(45,255,122,0.12); color: var(--grass); border: 1px solid rgba(45,255,122,0.25); }
+  .ph-rocket { background: rgba(255,92,43,0.12); color: var(--rocket); border: 1px solid rgba(255,92,43,0.25); }
+  .ph-shield { background: rgba(56,182,255,0.12); color: var(--shield); border: 1px solid rgba(56,182,255,0.25); }
+  .ph-special { background: rgba(255,210,63,0.12); color: var(--special); border: 1px solid rgba(255,210,63,0.25); }
+  .ph-laser { background: rgba(255,46,159,0.12); color: var(--laser); border: 1px solid rgba(255,46,159,0.25); }
+
+  /* =============================== CARD TYPES ============================ */
+
+  .card-type-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-type-block {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .card-type-label-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-type-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .card-type-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    line-height: 1;
+  }
+
+  .card-type-count {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .card-type-body {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .card-type-body ul {
+    padding-left: 16px;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* =============================== SPECIAL CARDS ========================= */
+
+  .special-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .special-card {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .special-card-icon { font-size: 20px; margin-bottom: 6px; }
+
+  .special-card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .special-card-count {
+    font-family: 'Syne Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .special-card-desc {
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  /* =============================== CARD STACK ============================ */
+
+  .stack-visual {
+    background: var(--deep);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+
+  .stack-example-label {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .stack-events {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .stack-event {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 5px;
+    margin-bottom: 4px;
+    font-size: 13.5px;
+  }
+
+  .stack-event-num {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    width: 40px;
+    flex-shrink: 0;
+    letter-spacing: 0.1em;
+  }
+
+  .stack-event-name {
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .stack-event-note {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .stack-event.top { background: rgba(255,92,43,0.1); border: 1px solid rgba(255,92,43,0.2); }
+  .stack-event.mid { background: rgba(56,182,255,0.08); border: 1px solid rgba(56,182,255,0.15); }
+  .stack-event.bot { background: rgba(45,255,122,0.06); border: 1px solid rgba(45,255,122,0.12); }
+
+  .resolve-arrow {
+    text-align: center;
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin: 8px 0;
+  }
+
+  .stack-rules-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .stack-rules-list li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.55;
+    align-items: flex-start;
+  }
+
+  .stack-bullet {
+    color: var(--special);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  /* =============================== SPACE GRASS =========================== */
+
+  .grass-section-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .grass-block {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .grass-block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    color: var(--grass);
+    margin-bottom: 10px;
+  }
+
+  .grass-block p, .grass-block ul {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .grass-block ul {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 4px;
+  }
+
+  /* =============================== QUICK REF ============================= */
+
+  .quick-ref-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .qr-block {
+    background: var(--panel);
+    border: 1px solid var(--rim);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+
+  .qr-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .qr-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .qr-list li {
+    font-size: 13px;
+    line-height: 1.4;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    border-bottom: 1px solid var(--rule-line);
+    padding-bottom: 6px;
+  }
+
+  .qr-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .qr-key { color: var(--muted); font-size: 12px; flex-shrink: 0; }
+  .qr-val { color: var(--text); font-weight: 500; text-align: right; }
+
+  /* =============================== BOOSTER TABLE ========================= */
+
+  .booster-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  .booster-table th {
+    font-family: 'Syne Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--rim);
+  }
+
+  .booster-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule-line);
+    vertical-align: top;
+    line-height: 1.55;
+    color: var(--text);
+  }
+
+  .booster-table tr:last-child td { border-bottom: none; }
+
+  .booster-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .booster-name {
+    font-family: 'Syne Mono', monospace;
+    font-size: 12px;
+    color: var(--special);
+    white-space: nowrap;
+  }
+
+  /* =============================== 2-PLAYER VARIANT ====================== */
+
+  .variant-box {
+    background: rgba(255, 46, 159, 0.06);
+    border: 1px solid rgba(255, 46, 159, 0.2);
+    border-radius: 8px;
+    padding: 20px 24px;
+  }
+
+  .variant-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.06em;
+    color: var(--laser);
+    margin-bottom: 12px;
+  }
+
+  .variant-rules {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .variant-rules li {
+    display: flex;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .variant-rules li::before {
+    content: '▸';
+    color: var(--laser);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* =============================== FOOTER ================================ */
+
+  .page-footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule-line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  .footer-right {
+    font-family: 'Syne Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+
+  /* =============================== UTILITY =============================== */
+
+  strong { color: var(--white); font-weight: 600; }
+
+  em { color: var(--text); }
+
+  @media (max-width: 680px) {
+    body { padding: 28px 18px 60px; }
+    .win-grid, .ship-layout, .grass-section-inner { grid-template-columns: 1fr; }
+    .special-grid { grid-template-columns: repeat(2, 1fr); }
+    .quick-ref-grid { grid-template-columns: 1fr 1fr; }
+    .card-type-block { grid-template-columns: 1fr; }
+    .phase-row { grid-template-columns: 70px 1fr; }
+    .game-title { font-size: 64px; }
+    .booster-table th:nth-child(1), .booster-table td:nth-child(1) { min-width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================================================================
+     HEADER
+     ====================================================================== -->
+<header class="page-header">
+  <div class="game-eyebrow">Complete Rulebook · Version 2</div>
+  <div class="game-title">SPACE<br><span>GOATS</span></div>
+  <div class="game-subtitle">2 – 5 Players · Card Game · Strategic Combat &amp; Resource Management</div>
+  <div class="header-rule"></div>
+</header>
+
+
+<!-- ======================================================================
+     OVERVIEW
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">01 —</span>
+    <h2 class="section-title">What Is This Game?</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="overview-box">
+    <p>Space Goats is a 2–5 player strategic card game about goat-piloted spaceships. Players build defenses, fire rockets into orbit, and race to either blow up every other ship or secretly stockpile enough Space Grass to colonize the void.</p>
+    <p>Each turn you draw, fire (or hold) your orbiting rockets, collect Grass, play cards to upgrade your ship, and clean up your hand. The game mixes aggressive combat with quiet resource management — ignore someone's Grass pile at your peril.</p>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     WIN CONDITIONS
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">02 —</span>
+    <h2 class="section-title">How to Win</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="win-grid">
+    <div class="win-card combat">
+      <div class="win-label">Win Condition 1</div>
+      <div class="win-name">Combat Victory</div>
+      <div class="win-desc">Be the last player with a ship that isn't destroyed. Blow everyone else out of the sky.</div>
+    </div>
+    <div class="win-card colony">
+      <div class="win-label">Win Condition 2</div>
+      <div class="win-name">Colony Victory</div>
+      <div class="win-desc">At the end of your Resource Phase, if your personal Grass stockpile reaches <strong>6 Space Grass cards</strong>, declare Colony Victory. Opponents have one last chance to Steal before it confirms.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     SETUP
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">03 —</span>
+    <h2 class="section-title">Setup</h2>
+    <div class="section-line"></div>
+  </div>
+  <ol class="steps-list">
+    <li>Separate the 5 <strong>Ship Cards</strong> and deal one face-up to each player.</li>
+    <li>Separate all 18 <strong>Space Grass Cards</strong> and shuffle them into their own face-down <strong>Grass Pile</strong>. Place it in a shared area everyone can reach.</li>
+    <li>Shuffle the remaining cards into the face-down <strong>Shared Pile</strong> (81 cards for 3–5 players; see the 2-Player Variant section for exceptions).</li>
+    <li>Deal <strong>5 cards</strong> from the Shared Pile to each player as their starting hand.</li>
+    <li>Decide who goes first (suggestion: whoever most recently watched a space-related movie).</li>
+  </ol>
+  <div class="note-box">
+    <strong>2-Player Duel?</strong> Before playing, each player attaches one Shield card to Slot 0 of their ship as starting equipment. See the 2-Player Variant section for the full rule differences.
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     YOUR SHIP
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">04 —</span>
+    <h2 class="section-title">Your Ship</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="ship-layout">
+    <div class="ship-stat-block">
+      <div class="stat-label">Hull HP</div>
+      <div class="stat-value" style="color:var(--rocket)">2</div>
+      <div class="stat-desc">Your ship absorbs 2 direct Hull hits before it is destroyed. Only rockets that bypass all your Shields hit the Hull.</div>
+    </div>
+    <div class="ship-stat-block">
+      <div class="stat-label">Upgrade Slots</div>
+      <div class="stat-value" style="color:var(--shield)">4</div>
+      <div class="stat-desc">Attach Shields and Boosters to these slots. Maximum 4 attached cards at any time.</div>
+    </div>
+    <div class="ship-stat-block">
+      <div class="stat-label">Orbit Zone Cap</div>
+      <div class="stat-value" style="color:var(--grass)">2</div>
+      <div class="stat-desc">You may hold up to 2 Standard Rockets in orbit at a time. Must fire before staging more if at cap.</div>
+    </div>
+    <div class="ship-stat-block">
+      <div class="stat-label">Hand Limit</div>
+      <div class="stat-value" style="color:var(--special)">5</div>
+      <div class="stat-desc">At end of turn, discard down to 5 cards. Choose what to keep carefully.</div>
+    </div>
+  </div>
+
+  <div class="note-box" style="margin-bottom:14px;">
+    <strong>Key rule:</strong> Rockets only target <strong>Shields</strong>, never Boosters. If a ship has no Shields but still has Boosters in slots, the rocket bypasses the Boosters and hits the Hull directly.
+  </div>
+
+  <div class="note-box">
+    <strong>Slot replacement:</strong> You may freely play into any open slot. To replace an <em>occupied</em> slot, you must first discard the card currently there — it cannot return to your hand. Gone is gone.
+  </div>
+
+  <div style="margin-top:16px;">
+    <div class="stat-label" style="margin-bottom:10px;">Ship Names (identity only — all ships are mechanically identical)</div>
+    <div class="ship-names-row">
+      <span class="ship-tag">The Baaad Omen</span>
+      <span class="ship-tag">The Grazing Fury</span>
+      <span class="ship-tag">The Cud Bucket</span>
+      <span class="ship-tag">The Bleating Heart</span>
+      <span class="ship-tag">The Herd Ship Mentality</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     TURN STRUCTURE
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">05 —</span>
+    <h2 class="section-title">Turn Structure</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="phases-list">
+
+    <div class="phase-row">
+      <div class="phase-num-col">
+        <div class="phase-number">1</div>
+        <div class="phase-tag">Phase</div>
+      </div>
+      <div class="phase-content">
+        <div class="phase-name">Draw</div>
+        <div class="phase-desc">
+          Draw <strong>1 card</strong> from the Shared Pile into your hand.
+          If the Shared Pile is empty, shuffle the discard pile to form a new one first.
+          Some Boosters let you draw an extra card here.
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-num-col">
+        <div class="phase-number">2</div>
+        <div class="phase-tag">Phase</div>
+      </div>
+      <div class="phase-content">
+        <div class="phase-name">Orbit Resolution</div>
+        <div class="phase-desc">
+          For each <span class="phase-highlight ph-rocket">Rocket</span> in your Orbit Zone, choose to <strong>fire</strong> or <strong>hold</strong>:
+          <ul>
+            <li><strong>Fire:</strong> Declare a target. The rocket hits one Shield, or the Hull if no Shields remain. Opens a Card Stack window — opponents may respond before it hits.</li>
+            <li><strong>Hold:</strong> Rocket stays in orbit and carries over. You may keep holding to build pressure.</li>
+          </ul>
+          Skip this phase entirely if your Orbit Zone is empty.
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-num-col">
+        <div class="phase-number">3</div>
+        <div class="phase-tag">Phase</div>
+      </div>
+      <div class="phase-content">
+        <div class="phase-name">Resource</div>
+        <div class="phase-desc">
+          Draw <strong>1 card</strong> from the <span class="phase-highlight ph-grass">Grass Pile</span> and place it face-up in your personal stockpile. If the Grass Pile is empty, skip this phase entirely.
+          <br><br>
+          After collecting, if your stockpile reaches <strong>6 Grass cards</strong>, immediately declare <strong>Colony Victory</strong>. Opponents may respond with Steal cards before it confirms.
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-num-col">
+        <div class="phase-number">4</div>
+        <div class="phase-tag">Phase</div>
+      </div>
+      <div class="phase-content">
+        <div class="phase-name">Play</div>
+        <div class="phase-desc">
+          Play any number of cards from your hand in any order. Options:
+          <ul>
+            <li><span class="phase-highlight ph-shield">Shield</span> → Attach to an open slot.</li>
+            <li><span class="phase-highlight ph-rocket">Booster</span> → Attach to an open slot.</li>
+            <li><span class="phase-highlight ph-rocket">Rocket</span> → Stage <strong>1 per turn</strong> into Orbit Zone (max 2). Must fire one first if at cap.</li>
+            <li><span class="phase-highlight ph-laser">Laser Rocket</span> → Fire immediately at any target. Opens a Card Stack window.</li>
+            <li><span class="phase-highlight ph-special">Special Card</span> → Open timing — play any time, on any turn.</li>
+            <li><span class="phase-highlight ph-grass">Grass Spend</span> → Return 2 Grass to bottom of Grass Pile, draw 1 from Shared Pile.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-row">
+      <div class="phase-num-col">
+        <div class="phase-number">5</div>
+        <div class="phase-tag">Phase</div>
+      </div>
+      <div class="phase-content">
+        <div class="phase-name">End</div>
+        <div class="phase-desc">
+          Discard down to <strong>5 cards</strong>. You choose what to keep. Pass clockwise.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     CARD TYPES
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">06 —</span>
+    <h2 class="section-title">Card Types</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="card-type-grid">
+
+    <div class="card-type-block">
+      <div class="card-type-label-col">
+        <div class="card-type-icon">🚀</div>
+        <div class="card-type-name" style="color:var(--rocket)">Standard Rocket</div>
+        <div class="card-type-count">19 cards</div>
+      </div>
+      <div class="card-type-body">
+        Stage into your Orbit Zone during Phase 4 (max 1 per turn). In Phase 2, choose to fire or hold. When fired, destroys one Shield on the target. If no Shields remain, hits the Hull. Boosters are never a valid target.
+      </div>
+    </div>
+
+    <div class="card-type-block">
+      <div class="card-type-label-col">
+        <div class="card-type-icon">⚡</div>
+        <div class="card-type-name" style="color:var(--laser)">Laser Rocket</div>
+        <div class="card-type-count">6 cards (3+ players only)</div>
+      </div>
+      <div class="card-type-body">
+        Bypass the Orbit Zone entirely — fire immediately when played during Phase 4. Hits one Shield or the Hull directly. Still opens a Card Stack window, so opponents may respond. <strong>Cannot be played on Turn 1.</strong>
+      </div>
+    </div>
+
+    <div class="card-type-block">
+      <div class="card-type-label-col">
+        <div class="card-type-icon">🛡️</div>
+        <div class="card-type-name" style="color:var(--shield)">Shield</div>
+        <div class="card-type-count">19 cards</div>
+      </div>
+      <div class="card-type-body">
+        Attach to an open slot. Absorbs one rocket hit, then is destroyed and discarded. <strong>Only Shields protect the Hull</strong> — Boosters do not. A ship is vulnerable the moment all Shields are gone.
+      </div>
+    </div>
+
+    <div class="card-type-block">
+      <div class="card-type-label-col">
+        <div class="card-type-icon">⚙️</div>
+        <div class="card-type-name" style="color:var(--special)">Booster</div>
+        <div class="card-type-count">14 cards</div>
+      </div>
+      <div class="card-type-body">
+        Attach to a slot for a passive effect while it stays attached. Never destroyed by rockets — only Sabotage Special Cards can remove them. Replacing a Booster discards the old one (it does not return to hand). See the Booster Reference section for all 14 effects.
+      </div>
+    </div>
+
+    <div class="card-type-block">
+      <div class="card-type-label-col">
+        <div class="card-type-icon">🌿</div>
+        <div class="card-type-name" style="color:var(--grass)">Space Grass</div>
+        <div class="card-type-count">18 cards (separate pile)</div>
+      </div>
+      <div class="card-type-body">
+        Never drawn into your hand. Collected automatically from the Grass Pile during Phase 4. Kept face-up as your personal stockpile. Collect 6 to win. Alternatively, spend 2 Grass during Phase 4 to draw 1 card — a deliberate tradeoff that moves you further from Colony Victory.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     SPECIAL CARDS
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">07 —</span>
+    <h2 class="section-title">Special Cards</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="overview-box" style="margin-bottom:16px; border-left-color: var(--special);">
+    Special Cards have <strong>open timing</strong> — play them on your turn or any opponent's turn. They go on the Card Stack when played and resolve when the stack is resolved. There are 5 subtypes, 23 cards total.
+  </div>
+
+  <div class="special-grid">
+    <div class="special-card">
+      <div class="special-card-icon">🛑</div>
+      <div class="special-card-name">Intercept</div>
+      <div class="special-card-count">5 cards</div>
+      <div class="special-card-desc">Destroy or redirect a declared rocket before it hits its target. Best played the moment a rocket is fired at you or an ally.</div>
+    </div>
+    <div class="special-card">
+      <div class="special-card-icon">🌾</div>
+      <div class="special-card-name">Steal</div>
+      <div class="special-card-count">5 cards</div>
+      <div class="special-card-desc">Take 1 Grass card from a target opponent's stockpile. Essential for blocking Colony Victory — resolves before the win is confirmed.</div>
+    </div>
+    <div class="special-card">
+      <div class="special-card-icon">💥</div>
+      <div class="special-card-name">Sabotage</div>
+      <div class="special-card-count">5 cards</div>
+      <div class="special-card-desc">Destroy any Shield or Booster currently attached to an opponent's ship. Knocks out one card of your choice from any slot.</div>
+    </div>
+    <div class="special-card">
+      <div class="special-card-icon">🔧</div>
+      <div class="special-card-name">Repair</div>
+      <div class="special-card-count">4 cards</div>
+      <div class="special-card-desc">Recover one Shield or Booster from the discard pile and attach it to an open slot on your ship.</div>
+    </div>
+    <div class="special-card">
+      <div class="special-card-icon">🚀</div>
+      <div class="special-card-name">Launch</div>
+      <div class="special-card-count">4 cards</div>
+      <div class="special-card-desc">Instantly stage a rocket from your hand into your Orbit Zone outside of Phase 4. Subject to normal Orbit Zone cap of 2.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     THE CARD STACK
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">08 —</span>
+    <h2 class="section-title">The Card Stack</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="overview-box" style="margin-bottom:16px; border-left-color: var(--special);">
+    The Card Stack governs how actions resolve when players respond to each other. It opens whenever a rocket is declared firing <em>or</em> a Special Card is played. Any player may respond before resolution.
+  </div>
+
+  <div class="stack-visual">
+    <div class="stack-example-label">Example Resolution — Reads Top → Bottom</div>
+    <div class="stack-events">
+      <div class="stack-event top">
+        <div class="stack-event-num">3RD (TOP)</div>
+        <div class="stack-event-name">Player A plays <strong>Sabotage</strong> → destroys Player B's Intercept</div>
+        <div class="stack-event-note">resolves first</div>
+      </div>
+      <div class="stack-event mid">
+        <div class="stack-event-num">2ND</div>
+        <div class="stack-event-name">Player B plays <strong>Intercept</strong> → but it's been Sabotaged, so it fizzles</div>
+        <div class="stack-event-note">fizzles harmlessly</div>
+      </div>
+      <div class="stack-event bot">
+        <div class="stack-event-num">1ST (BOT)</div>
+        <div class="stack-event-name">Player A's <strong>Rocket</strong> declared firing at Player B</div>
+        <div class="stack-event-note">resolves last — rocket hits</div>
+      </div>
+    </div>
+    <div class="resolve-arrow">↑ STACK RESOLVES TOP → BOTTOM ↑</div>
+  </div>
+
+  <ul class="stack-rules-list">
+    <li><span class="stack-bullet">◆</span>Any player may add a Special Card on top of any stack event — not just the players directly involved.</li>
+    <li><span class="stack-bullet">◆</span>Each new card added opens another response window. Keep responding until all players pass.</li>
+    <li><span class="stack-bullet">◆</span>Once all players pass, resolve top to bottom. The most recently added card resolves first.</li>
+    <li><span class="stack-bullet">◆</span>Rocket targets are declared at firing — a rocket in the Orbit Zone has no target until its owner announces it is firing.</li>
+    <li><span class="stack-bullet">◆</span>If an effect is no longer valid when it resolves (e.g. the rocket it was meant to intercept was already destroyed), it <strong>fizzles</strong> — no effect, discarded harmlessly.</li>
+  </ul>
+</section>
+
+
+<!-- ======================================================================
+     SPACE GRASS
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">09 —</span>
+    <h2 class="section-title">Space Grass</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="grass-section-inner">
+    <div class="grass-block">
+      <div class="grass-block-title">Collecting Grass</div>
+      <p>The Grass Pile is entirely separate from the Shared Pile. During Phase 3, draw 1 Grass card and place it face-up in front of you as your personal stockpile. If the Grass Pile is empty, skip Phase 3 entirely for that turn.</p>
+    </div>
+    <div class="grass-block">
+      <div class="grass-block-title">Colony Victory</div>
+      <p>The moment your stockpile reaches <strong>6 Grass cards</strong> at the end of Phase 3, declare Colony Victory. Opponents may immediately play Steal cards in response. If your stockpile still reaches 6 after all Steals resolve, you win.</p>
+    </div>
+    <div class="grass-block">
+      <div class="grass-block-title">Grass Spend Ability</div>
+      <p>During Phase 4, you may return 2 Grass from your stockpile to the <em>bottom</em> of the Grass Pile to draw 1 card from the Shared Pile. This moves you further from Colony Victory — use it only when you need the cards badly.</p>
+    </div>
+    <div class="grass-block">
+      <div class="grass-block-title">Elimination &amp; Grass</div>
+      <p>When a player is eliminated, their Grass stockpile goes to the <em>bottom</em> of the Grass Pile (not the discard). Their hand and all ship cards are discarded normally.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     BOOSTER REFERENCE
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">10 —</span>
+    <h2 class="section-title">Booster Reference</h2>
+    <div class="section-line"></div>
+  </div>
+  <table class="booster-table">
+    <thead>
+      <tr>
+        <th>Booster Name</th>
+        <th>Effect While Attached</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="booster-name">The Extra Nibble</span></td>
+        <td>Draw 1 extra card during Phase 1.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">Orbit Expander 3000</span></td>
+        <td>Your Orbit Zone cap increases by 1 (holds 3 rockets instead of 2).</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Discount Grazer</span></td>
+        <td>Grass Spend costs 1 Grass instead of 2.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Nosy Snout</span></td>
+        <td>Once per turn, look at the top card of the Shared Pile.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Freeloader</span></td>
+        <td>When any other player uses Grass Spend, you may draw 1 card from the Shared Pile.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">Grief Wool</span></td>
+        <td>When one of your Shields is destroyed, draw 1 card.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Generous Gate</span></td>
+        <td>When you attach a Shield to your ship, draw 1 card immediately.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Panic Button</span></td>
+        <td>Once per game, fire a rocket from your Orbit Zone outside of Phase 2. Then discard this card.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Overgrown Engine</span></td>
+        <td>Collect 1 extra Grass during Phase 3.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Barbed Fence</span></td>
+        <td>Opponents may only target your Grass with a Steal card if there are already 2 or more Special Cards on the Card Stack.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">Double Dip Drive</span></td>
+        <td>When you use Grass Spend, draw 2 cards instead of 1.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Periscope Horn</span></td>
+        <td>Once per turn, look at one opponent's full hand.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Silver Lining</span></td>
+        <td>When a rocket in your Orbit Zone is intercepted, draw 1 card as compensation.</td>
+      </tr>
+      <tr>
+        <td><span class="booster-name">The Revolving Hoof</span></td>
+        <td>When you discard a card from one of your slots to make room, it returns to your hand instead of the discard pile.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+
+<!-- ======================================================================
+     2-PLAYER VARIANT
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">11 —</span>
+    <h2 class="section-title">2-Player Duel Variant</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="variant-box">
+    <div class="variant-title">Special Rules for 2-Player Games</div>
+    <ul class="variant-rules">
+      <li><strong>No Laser Rockets.</strong> All 6 Laser Rocket cards are removed from the deck before shuffling. The Shared Pile contains 73 cards instead of 81.</li>
+      <li><strong>Starting Shields.</strong> Before the game begins, each player attaches one Shield card to Slot 0 of their ship. These come from the deck — they are not shuffled in.</li>
+      <li><strong>These rules apply only to games that start with 2 players.</strong> If a 3–5 player game eliminates players down to 2, these variant rules do not activate mid-game.</li>
+    </ul>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     QUICK REFERENCE
+     ====================================================================== -->
+<section class="section">
+  <div class="section-header">
+    <span class="section-num">12 —</span>
+    <h2 class="section-title">Quick Reference</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="quick-ref-grid">
+    <div class="qr-block">
+      <div class="qr-title">Numbers</div>
+      <ul class="qr-list">
+        <li><span class="qr-key">Hand limit</span><span class="qr-val">5 cards</span></li>
+        <li><span class="qr-key">Ship slots</span><span class="qr-val">4 slots</span></li>
+        <li><span class="qr-key">Hull HP</span><span class="qr-val">2 hits</span></li>
+        <li><span class="qr-key">Orbit Zone cap</span><span class="qr-val">2 rockets</span></li>
+        <li><span class="qr-key">Rockets staged/turn</span><span class="qr-val">1 max</span></li>
+        <li><span class="qr-key">Colony threshold</span><span class="qr-val">6 Grass</span></li>
+      </ul>
+    </div>
+    <div class="qr-block">
+      <div class="qr-title">Card Counts</div>
+      <ul class="qr-list">
+        <li><span class="qr-key">Standard Rockets</span><span class="qr-val">19</span></li>
+        <li><span class="qr-key">Laser Rockets</span><span class="qr-val">6 (3+ players)</span></li>
+        <li><span class="qr-key">Shields</span><span class="qr-val">19</span></li>
+        <li><span class="qr-key">Boosters</span><span class="qr-val">14</span></li>
+        <li><span class="qr-key">Special Cards</span><span class="qr-val">23</span></li>
+        <li><span class="qr-key">Space Grass</span><span class="qr-val">18 (own pile)</span></li>
+      </ul>
+    </div>
+    <div class="qr-block">
+      <div class="qr-title">Key Rules</div>
+      <ul class="qr-list">
+        <li><span class="qr-key">Rockets target</span><span class="qr-val">Shields only</span></li>
+        <li><span class="qr-key">Targets declared</span><span class="qr-val">At firing</span></li>
+        <li><span class="qr-key">Boosters destroyed by</span><span class="qr-val">Sabotage only</span></li>
+        <li><span class="qr-key">Grass goes to hand?</span><span class="qr-val">Never</span></li>
+        <li><span class="qr-key">Spend returns Grass to</span><span class="qr-val">Bottom of pile</span></li>
+        <li><span class="qr-key">Eliminated Grass goes to</span><span class="qr-val">Bottom of pile</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ======================================================================
+     FOOTER
+     ====================================================================== -->
+<footer class="page-footer">
+  <div class="footer-left">SPACE GOATS v2 — COMPLETE RULEBOOK</div>
+  <div class="footer-right">2–5 PLAYERS · COLONY VICTORY: 6 GRASS</div>
+</footer>
+
+</body>
+</html>
