@@ -253,38 +253,48 @@ def trigger_silver_lining(owner: "Player", game_state: "GameState") -> None:
 # Rocket Targeting and Resolution
 # ============================================================================
 
-def resolve_rocket_hit(attacking_player: "Player", rocket: Card, 
+def resolve_rocket_hit(attacking_player: "Player", rocket: Card,
                       target_player: "Player", game_state: "GameState") -> bool:
     """
     Resolve a rocket hit on target player.
-    
+
     Targeting rules:
     - Rockets only target Shields, not Boosters
     - If no Shields remain, hit the Hull directly
-    - Hitting the Hull destroys the ship
-    
+    - Hull has 2 HP — ship is destroyed only when HP reaches 0
+    - When a ship is destroyed, all of its Grass is transferred to the attacker
+
     Returns True if target player is eliminated.
     """
     shield_count = target_player.ship.get_shield_count()
-    
+
     if shield_count > 0:
         # Find first Shield and destroy it
         for i, slot in enumerate(target_player.ship.slots):
             if slot and slot.card_type == CardType.SHIELD:
                 target_player.ship.slots[i] = None
                 game_state.discard_pile.append(slot)
-                
+
                 # Trigger Grief Wool on target if they have it
                 if has_booster(target_player, "Grief Wool"):
                     trigger_grief_wool(target_player, game_state)
-                
+
                 return False  # Ship not destroyed
     else:
         # No Shields remain — hit Hull directly
-        target_player.ship.hull_hp = 0
-        target_player.is_eliminated = True
-        return True  # Ship destroyed
-    
+        target_player.ship.hull_hp -= 1
+
+        if target_player.ship.hull_hp <= 0:
+            target_player.is_eliminated = True
+
+            # Transfer all of the eliminated player's Grass to the attacker
+            attacking_player.grass_stockpile.extend(target_player.grass_stockpile)
+            target_player.grass_stockpile.clear()
+
+            return True  # Ship destroyed
+
+        return False  # Hull damaged but ship still standing
+
     return False
 
 

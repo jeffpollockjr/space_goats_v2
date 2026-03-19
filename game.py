@@ -144,6 +144,11 @@ class SpaceGoatsGame:
                     self.win_condition = "Combat Victory"
                     self.logger.announce_game_over(self.winner, self.win_condition, turn)
                     return self.winner, self.win_condition
+                
+                # Check if the current player just won by Colony Victory
+                # (set during execute_turn)
+                if self.winner is not None:
+                    return self.winner, self.win_condition
         
         # Safety: No winner after max turns
         active = self.game_state.get_active_players()
@@ -170,6 +175,7 @@ class SpaceGoatsGame:
             self.logger.announce_phase(2, player.name)
             phase_2_orbit_resolution(player, self.game_state, ai)
             self._resolve_all_stacks()
+            self._cleanup_eliminations()
         
         # Phase 3 — Resource / Grass Collection
         self.logger.announce_phase(3, player.name)
@@ -195,6 +201,8 @@ class SpaceGoatsGame:
         # Phase 4 — Play
         self.logger.announce_phase(4, player.name)
         phase_4_play(player, self.game_state, ai)
+        self._resolve_all_stacks()
+        self._cleanup_eliminations()
         
         # Phase 5 — End
         self.logger.announce_phase(5, player.name)
@@ -253,15 +261,58 @@ class SpaceGoatsGame:
                 return
         
         self.logger.log_stack_all_pass()
-    
+
+    # ========================================================================
+    # Elimination Cleanup
+    # ========================================================================
+
+    def _cleanup_eliminations(self) -> None:
+        """
+        Explicitly clean up any newly eliminated players after stack resolution.
+
+        When a ship is destroyed in cards.py, the attacker already receives
+        the victim's Grass stockpile directly. This method acts as a safety net
+        — if any eliminated player still has Grass on their object for any
+        reason, it is sent to the Grass Pile rather than silently orphaned.
+        It also handles the standard cleanup of the eliminated player's hand
+        and attached ship cards.
+        """
+        for player in self.game_state.players:
+            if not player.is_eliminated:
+                continue
+
+            # Safety net: if any Grass remains on the eliminated player
+            # (should be empty after cards.py transfer, but guard against
+            # edge cases such as simultaneous eliminations), return it
+            # to the bottom of the Grass Pile.
+            if player.grass_stockpile:
+                self.game_state.grass_pile.extend(player.grass_stockpile)
+                player.grass_stockpile.clear()
+
+            # Discard the eliminated player's hand
+            if player.hand:
+                self.game_state.discard_pile.extend(player.hand)
+                player.hand.clear()
+
+            # Discard all cards attached to the eliminated player's ship slots
+            for i, slot in enumerate(player.ship.slots):
+                if slot is not None:
+                    self.game_state.discard_pile.append(slot)
+                    player.ship.slots[i] = None
+
+            # Clear the orbit zone (rockets in transit are discarded)
+            if player.ship.orbit_zone:
+                self.game_state.discard_pile.extend(player.ship.orbit_zone)
+                player.ship.orbit_zone.clear()
+
     # ========================================================================
     # Win Conditions
     # ========================================================================
     
     def _get_colony_threshold(self) -> int:
         """Get the Colony Victory Grass threshold for current player count."""
-        # Colony victory threshold is 6 cards for all player counts
-        return 6
+        # Colony victory threshold is 12 cards for all player counts
+        return 12
     
     def _handle_colony_victory_stack_window(self, declaring_player: Player,
                                            threshold: int) -> None:

@@ -265,8 +265,8 @@ class AIPlayer:
     
     def _get_colony_victory_threshold(self, game_state: GameState) -> int:
         """Get the Grass threshold for this player count."""
-        # Colony victory threshold is 6 cards for all player counts
-        return 6
+        # Colony victory threshold is 12 cards for all player counts
+        return 12
     
     def get_best_target_for_rocket(self, player: Player, 
                                    game_state: GameState) -> Optional[Player]:

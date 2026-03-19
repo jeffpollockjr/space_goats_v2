@@ -21,7 +21,7 @@ import time
 # ============================================================================
 
 NUM_SIMULATIONS = 500
-NUM_PLAYERS = 5
+NUM_PLAYERS = 2
 SHOW_PROGRESS = True  # Print progress every N games
 PROGRESS_INTERVAL = 50
 
